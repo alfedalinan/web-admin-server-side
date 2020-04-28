@@ -5,6 +5,7 @@ import { EventController } from "../controller/EventController";
 import { UserController } from "../controller/UserController";
 import { IdentityController } from "../controller/IdentityController";
 import { CheckAccessToken, CheckRefreshToken } from "../middlewares/CheckJwt";
+import { Check } from "typeorm";
 
 
 
@@ -40,7 +41,13 @@ class Routes {
         // #region User
 
         app.route('/user')
-            .post(this.user.create)
+            .get([CheckAccessToken], this.user.get)
+            .post([CheckAccessToken], this.user.create)
+        
+        app.route('/user/:id')
+            .get([CheckAccessToken], this.user.getById)
+            .put([CheckAccessToken], this.user.update)
+            .delete([CheckAccessToken], this.user.remove)
 
         // #endregion
         

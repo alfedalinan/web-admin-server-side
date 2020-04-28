@@ -28,7 +28,7 @@ export class EventController {
                 res.status(response.status).json(response);   
             }
 
-        })
+        });
     }
 
     public async getByApolloId(req: Request, res: Response) {

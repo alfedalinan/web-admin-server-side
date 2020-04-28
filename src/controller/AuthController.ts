@@ -101,7 +101,6 @@ export class AuthController {
         
                     res.status(response.status).json(response);
                 }
-
             }
         })
         .catch(error => {
