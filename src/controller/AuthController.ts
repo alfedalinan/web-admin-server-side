@@ -5,6 +5,7 @@ import {StatusCode} from '../constants/StatusCode';
 import {StatusMessage} from '../constants/StatusMessage';
 import { CreateAccessJwt, CreateRefreshJwt } from '../middlewares/CreateJwt';
 import { Users } from '../entities/Users';
+import { UserGroups } from '../entities/UserGroups';
 
 export class AuthController {
 
@@ -80,12 +81,12 @@ export class AuthController {
                     let refreshToken: string = CreateRefreshJwt({ id: Date.now() });
 
                     let users = await createQueryBuilder(Users, "users")
-                                    .innerJoinAndSelect("users.user_group", "user_groups")
+                                    .innerJoinAndSelect("users.user_groups", "user_groups")
                                     .where("users.id = :id", { id: user.id })
                                     .getOne();
 
                     var includeKeys = ["id", "username",
-                        "first_name", "last_name", "email", "created", "user_group", "user_domains"];
+                        "first_name", "last_name", "email", "created", "user_group", "user_groups", "domains"];
 
                     for (const key in users) {
                         if (!includeKeys.includes(key)) {
@@ -93,8 +94,8 @@ export class AuthController {
                         }
                     }
                     
-                    user['access_token'] = accessToken;
-                    user['refresh_token'] = refreshToken;
+                    users['access_token'] = accessToken;
+                    users['refresh_token'] = refreshToken;
 
                     response.status = StatusCode.OK;
                     response.message = StatusMessage.OK;
