@@ -1,5 +1,5 @@
 import {Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn} from "typeorm";
-import { UserTypes } from "./UserTypes";
+import { UserGroups } from "./UserGroups";
 
 @Entity()
 export class Users {
@@ -8,7 +8,7 @@ export class Users {
     id: number
     
     @Column()
-    user_type: number
+    user_group: number
 
     @Column()
     username: string  
@@ -31,7 +31,10 @@ export class Users {
     @Column()
     created: string
 
-    @OneToOne(type => UserTypes, user_type => user_type.user)
-    @JoinColumn({ name: "user_type"})
-    access_type: UserTypes
+    @Column()
+    domains: string
+
+    @OneToOne(type => UserGroups, user_group => user_group.user)
+    @JoinColumn({ name: "user_group"})
+    user_groups: UserGroups
 }

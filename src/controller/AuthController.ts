@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import {mysql} from "../connection/Connection";
+import { createQueryBuilder } from "typeorm";
 import {StatusCode} from '../constants/StatusCode';
 import {StatusMessage} from '../constants/StatusMessage';
 import { CreateAccessJwt, CreateRefreshJwt } from '../middlewares/CreateJwt';
@@ -49,7 +50,7 @@ export class AuthController {
                 response.status = StatusCode.NOT_FOUND;
                 response.message = StatusMessage.NOT_FOUND;
                 response.data = [];
-                res.status(response.status).json(response);
+                res.status(StatusCode.OK).json(response);
                 return;
             }
             else {
@@ -68,7 +69,7 @@ export class AuthController {
                     response.message = "Password was incorrect";
                     response.data = [];
 
-                    res.status(response.status).json(response); 
+                    res.status(StatusCode.OK).json(response); 
                     return;
                 }
                 else {
@@ -78,17 +79,17 @@ export class AuthController {
                     let accessToken: string = CreateAccessJwt({ id: Date.now() });
                     let refreshToken: string = CreateRefreshJwt({ id: Date.now() });
 
-                    // let users = await createQueryBuilder(Users, "users")
-                    //                 .innerJoinAndSelect("users.access_type", "user_types")
-                    //                 .where("users.id = :id", { id: user.id })
-                    //                 .getOne();
+                    let users = await createQueryBuilder(Users, "users")
+                                    .innerJoinAndSelect("users.user_group", "user_groups")
+                                    .where("users.id = :id", { id: user.id })
+                                    .getOne();
 
                     var includeKeys = ["id", "username",
-                        "first_name", "last_name", "email", "created", "user_type"];
+                        "first_name", "last_name", "email", "created", "user_group", "user_domains"];
 
-                    for (const key in user) {
+                    for (const key in users) {
                         if (!includeKeys.includes(key)) {
-                            delete user[key];
+                            delete users[key];
                         }
                     }
                     
@@ -97,9 +98,9 @@ export class AuthController {
 
                     response.status = StatusCode.OK;
                     response.message = StatusMessage.OK;
-                    response.data = user;
+                    response.data = users;
         
-                    res.status(response.status).json(response);
+                    res.status(StatusCode.OK).json(response);
                 }
             }
         })
@@ -125,13 +126,13 @@ export class AuthController {
             response.message = StatusMessage.OK;
             response.access_token = tokens;
 
-            res.status(response.status).json(response)
+            res.status(StatusCode.OK).json(response)
         } catch (error) {
             response.status = StatusCode.INTERNAL_SERVER_ERROR;
             response.message = StatusMessage.INTERNAL_SERVER_ERROR;
             response.error = error;
 
-            res.status(response.status).json(response);
+            res.status(StatusCode.OK).json(response);
         }
     }
 

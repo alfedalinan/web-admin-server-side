@@ -16,7 +16,7 @@ export class UserController {
 
             const userRepository = connection.getRepository(Users);
             const user: Users[] = await userRepository.find({
-                select: ["id", "username", "email", "first_name", "last_name", "access_type", "created"]
+                select: ["id", "username", "email", "first_name", "last_name", "user_group", "domains", "created"]
             });
 
             response.status = StatusCode.OK;
@@ -40,7 +40,7 @@ export class UserController {
 
             const userRepository = connection.getRepository(Users);
             const user: Users = await userRepository.findOne(parseInt(userId), {
-               select: ["id", "first_name", "last_name", "username", "user_type", "created"] 
+               select: ["id", "first_name", "last_name", "username", "user_group", "domains", "created"] 
             });
 
             if (user) {
@@ -54,7 +54,7 @@ export class UserController {
                 response.message = StatusMessage.NOT_FOUND;
             }
 
-            res.status(response.status).json(response);
+            res.status(StatusCode.OK).json(response);
         })
         .catch(error => {
             response.status = StatusCode.INTERNAL_SERVER_ERROR;
@@ -71,7 +71,7 @@ export class UserController {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             username: req.body.username,
-            user_type: req.body.user_type,
+            user_group: req.body.user_group,
             password: req.body.password
         };
 
@@ -115,7 +115,7 @@ export class UserController {
             await userRepository.update(userId, user);
 
             let updatedUser: Users = await userRepository.findOne(parseInt(userId), 
-                { select: ["id", "first_name", "last_name", "username", "password", "created", "user_type"]});
+                { select: ["id", "first_name", "last_name", "username", "password", "created", "user_group", "domains"]});
 
             response.status = StatusCode.OK;
             response.message = StatusMessage.OK;

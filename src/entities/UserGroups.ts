@@ -2,7 +2,7 @@ import {Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn} from "type
 import { Users } from "./Users";
 
 @Entity()
-export class UserTypes {
+export class UserGroups {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -19,7 +19,7 @@ export class UserTypes {
     @Column()
     updated: string
 
-    @OneToOne(type => Users, user => user.user_type)
+    @OneToOne(type => Users, user => user.user_group)
     @JoinColumn({ name: "id" })
     user: Users
 }

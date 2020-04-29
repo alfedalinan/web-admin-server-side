@@ -3,7 +3,7 @@ import {createConnection} from "typeorm";
 import { AppConfig } from '../config/AppConfig';
 
 import { Users } from "../entities/Users";
-import { UserTypes } from "../entities/UserTypes";
+import { UserGroups } from "../entities/UserGroups";
 
 // MySQL Configuration
 export const mysql = createConnection({
@@ -15,7 +15,7 @@ export const mysql = createConnection({
     database: AppConfig.MysqlDatabase, 
     entities: [
        Users,
-       UserTypes
+       UserGroups
     ],
     synchronize: false,
     logging: false
