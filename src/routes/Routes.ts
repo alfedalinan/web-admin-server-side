@@ -42,7 +42,7 @@ class Routes {
 
         app.route('/user')
             .get([CheckAccessToken], this.user.get)
-            .post([CheckAccessToken], this.user.create)
+            .post(this.user.create)
         
         app.route('/user/:id')
             .get([CheckAccessToken], this.user.getById)
