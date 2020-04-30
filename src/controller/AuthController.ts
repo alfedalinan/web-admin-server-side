@@ -5,7 +5,7 @@ import {StatusCode} from '../constants/StatusCode';
 import {StatusMessage} from '../constants/StatusMessage';
 import { CreateAccessJwt, CreateRefreshJwt } from '../middlewares/CreateJwt';
 import { Users } from '../entities/Users';
-import { UserGroups } from '../entities/UserGroups';
+import { UserDomains } from '../entities/UserDomains';
 
 export class AuthController {
 
@@ -77,8 +77,8 @@ export class AuthController {
                     // Successful login
 
                     //Create new JW Token here (with parameters of users.id and users.username)
-                    let accessToken: string = CreateAccessJwt({ id: Date.now() });
-                    let refreshToken: string = CreateRefreshJwt({ id: Date.now() });
+                    let accessToken: string = CreateAccessJwt({ id: user.id, username: user.username, domains: user.domains });
+                    let refreshToken: string = CreateRefreshJwt({ id: user.id, username: user.username, domains: user.domains });
 
                     let users = await createQueryBuilder(Users, "users")
                                     .innerJoinAndSelect("users.user_groups", "user_groups")
@@ -86,7 +86,8 @@ export class AuthController {
                                     .getOne();
 
                     var includeKeys = ["id", "username",
-                        "first_name", "last_name", "email", "created", "user_group", "user_groups", "domains"];
+                        "first_name", "last_name", "email", "created", 
+                        "user_group", "user_groups", "domains"];
 
                     for (const key in users) {
                         if (!includeKeys.includes(key)) {
@@ -94,6 +95,10 @@ export class AuthController {
                         }
                     }
                     
+                    users['user_domains'] = await createQueryBuilder(UserDomains, "user_domains")
+                                            .where("user_domains.id IN (:ids)", { ids: JSON.parse(users.domains) })
+                                            .getMany();
+
                     users['access_token'] = accessToken;
                     users['refresh_token'] = refreshToken;
 

@@ -3,9 +3,8 @@ import {Request, Response} from "express";
 import {AuthController} from "../controller/AuthController";
 import { EventController } from "../controller/EventController";
 import { UserController } from "../controller/UserController";
-import { IdentityController } from "../controller/IdentityController";
 import { CheckAccessToken, CheckRefreshToken } from "../middlewares/CheckJwt";
-import { Check } from "typeorm";
+import { CheckAuthorization } from "../middlewares/CheckAuthorization";
 
 
 
@@ -13,14 +12,12 @@ class Routes {
     // Every controllers to be registered in routes must be declared here:
     private auth: AuthController;
     private event: EventController;
-    private identity: IdentityController;
     private user: UserController;
 
     constructor() {
         // Every controllers to be registered in routes must have an instance here:
         this.auth = new AuthController();
         this.event = new EventController();
-        this.identity = new IdentityController();
         this.user = new UserController();
     }
 

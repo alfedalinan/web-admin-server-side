@@ -22,7 +22,7 @@ export const CheckAccessToken = (req: Request, res: Response, next: NextFunction
             data: error
         };
 
-        res.status(StatusCode.UNAUTHORIZED).json(response);
+        res.status(StatusCode.OK).json(response);
         return;
     }
 
@@ -57,7 +57,7 @@ export const CheckRefreshToken = (req: Request, res: Response, next: NextFunctio
             data: error
         };
 
-        res.status(StatusCode.UNAUTHORIZED).json(response);
+        res.status(StatusCode.OK).json(response);
         return;
     }
 
