@@ -5,7 +5,9 @@ import {StatusCode} from '../constants/StatusCode';
 import {StatusMessage} from '../constants/StatusMessage';
 import { CreateAccessJwt, CreateRefreshJwt } from '../middlewares/CreateJwt';
 import { Users } from '../entities/Users';
-import { UserDomains } from '../entities/UserDomains';
+import { DomainGroups } from '../entities/DomainGroups';
+import { UserPrivileges } from '../entities/UserPrivileges';
+import { DomainPrivileges } from '../entities/DomainPrivileges';
 
 export class AuthController {
 
@@ -77,27 +79,28 @@ export class AuthController {
                     // Successful login
 
                     //Create new JW Token here (with parameters of users.id and users.username)
-                    let accessToken: string = CreateAccessJwt({ id: user.id, username: user.username, domains: user.domains });
-                    let refreshToken: string = CreateRefreshJwt({ id: user.id, username: user.username, domains: user.domains });
+                    let accessToken: string = CreateAccessJwt({ id: user.id, username: user.username, domains: user.domain_group });
+                    let refreshToken: string = CreateRefreshJwt({ id: user.id, username: user.username, domains: user.domain_group });
 
                     let users = await createQueryBuilder(Users, "users")
                                     .innerJoinAndSelect("users.user_groups", "user_groups")
                                     .where("users.id = :id", { id: user.id })
                                     .getOne();
 
-                    var includeKeys = ["id", "username",
-                        "first_name", "last_name", "email", "created", 
-                        "user_group", "user_groups", "domains"];
-
-                    for (const key in users) {
-                        if (!includeKeys.includes(key)) {
-                            delete users[key];
-                        }
-                    }
+                    users['user_groups']['user_privileges'] = await createQueryBuilder(UserPrivileges, "user_privileges")
+                                                                .where("user_privileges.id IN (:ids)", { ids: users['user_groups']['privileges'].split(',') })
+                                                                .getMany();
                     
-                    users['user_domains'] = await createQueryBuilder(UserDomains, "user_domains")
-                                            .where("user_domains.id IN (:ids)", { ids: JSON.parse(users.domains) })
+                    users['domain_groups'] = await createQueryBuilder(DomainGroups, "domain_groups")
+                                            .where("domain_groups.id IN (:ids)", { ids: users['domain_group'].split(',') })
                                             .getMany();
+
+                    for (let i = 0; i < users['domain_groups'].length; i++) {
+                        users['domain_groups'][i]['privileges'] = await createQueryBuilder(DomainPrivileges, "domain_privileges")
+                                                                        .where("domain_privileges.id IN (:ids)", 
+                                                                        { ids: users['domain_groups'][i]['domain_privileges'].split(',') })
+                                                                        .getMany();
+                    }
 
                     users['access_token'] = accessToken;
                     users['refresh_token'] = refreshToken;

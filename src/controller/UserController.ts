@@ -16,7 +16,7 @@ export class UserController {
 
             const userRepository = connection.getRepository(Users);
             const user: Users[] = await userRepository.find({
-                select: ["id", "username", "email", "first_name", "last_name", "user_group", "domains", "created"]
+                select: ["id", "username", "email", "first_name", "last_name", "user_group", "domain_group", "created"]
             });
 
             response.status = StatusCode.OK;
@@ -40,7 +40,7 @@ export class UserController {
 
             const userRepository = connection.getRepository(Users);
             const user: Users = await userRepository.findOne(parseInt(userId), {
-               select: ["id", "first_name", "last_name", "username", "user_group", "domains", "created"] 
+               select: ["id", "first_name", "last_name", "username", "user_group", "domain_group", "created"] 
             });
 
             if (user) {
@@ -115,7 +115,7 @@ export class UserController {
             await userRepository.update(userId, user);
 
             let updatedUser: Users = await userRepository.findOne(parseInt(userId), 
-                { select: ["id", "first_name", "last_name", "username", "password", "created", "user_group", "domains"]});
+                { select: ["id", "first_name", "last_name", "username", "password", "created", "user_group", "domain_group"]});
 
             response.status = StatusCode.OK;
             response.message = StatusMessage.OK;

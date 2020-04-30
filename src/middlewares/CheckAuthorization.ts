@@ -5,7 +5,7 @@ import { createQueryBuilder } from "typeorm";
 import { mysql } from '../connection/Connection';
 import { Users } from "../entities/Users";
 import { UserGroups } from "../entities/UserGroups";
-import { UserDomains } from "../entities/UserDomains";
+import { DomainGroups } from "../entities/DomainGroups";
 import { StatusCode } from '../constants/StatusCode';
 import { StatusMessage } from '../constants/StatusMessage';
 
@@ -15,9 +15,9 @@ export const CheckAuthorization = async (req: Request, res: Response, next: Next
     let accessToken = req.headers.authorization;
     let payload: any = jwt.verify(accessToken, AppConfig.JwtSecret);
 
-    
 
-    const userDomains = await createQueryBuilder(UserDomains, "user_domains")
+
+    const userDomains = await createQueryBuilder(DomainGroups, "user_domains")
                             .select("user_domains.domain")
                             .where("user_domains.id IN (:ids)", { ids: JSON.parse(payload.domains) })
                             .getMany();

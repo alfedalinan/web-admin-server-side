@@ -49,5 +49,11 @@ export const Helper = {
 
         return Crypto.createHash(algorithm).update(text).digest('hex');
 
+    },
+    writeLogToFile: (entityName: string, logText: string) => {
+
+        let fullLog = new Date().toString() + `: ${entityName} = ${logText}`;
+        console.log(fullLog);
+
     }
 }

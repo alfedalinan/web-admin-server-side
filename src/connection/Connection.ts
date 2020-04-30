@@ -4,7 +4,9 @@ import { AppConfig } from '../config/AppConfig';
 
 import { Users } from "../entities/Users";
 import { UserGroups } from "../entities/UserGroups";
-import { UserDomains } from "../entities/UserDomains";
+import { UserPrivileges } from "../entities/UserPrivileges";
+import { DomainGroups } from "../entities/DomainGroups";
+import { DomainPrivileges } from "../entities/DomainPrivileges";
 
 // MySQL Configuration
 export const mysql = createConnection({
@@ -17,7 +19,9 @@ export const mysql = createConnection({
     entities: [
        Users,
        UserGroups,
-       UserDomains
+       UserPrivileges,
+       DomainGroups,
+       DomainPrivileges
     ],
     synchronize: false,
     logging: false

@@ -1,17 +1,15 @@
 import {Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn} from "typeorm";
 
 @Entity()
-export class UserDomains {
+export class DomainGroups {
 
     @PrimaryGeneratedColumn()
     id: number
 
     @Column()
-    domain: string
+    domain_group: string
 
     @Column()
-    created: string
+    domain_privileges: string
 
-    @Column()
-    updated: string
 }

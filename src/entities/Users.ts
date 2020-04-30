@@ -23,7 +23,7 @@ export class Users {
     last_name: string
 
     @Column()
-    old_password: string
+    token: string
     
     @Column()
     email: string
@@ -32,7 +32,7 @@ export class Users {
     created: string
 
     @Column()
-    domains: string
+    domain_group: string
 
     @OneToOne(type => UserGroups, user_group => user_group.user)
     @JoinColumn({ name: "user_group"})

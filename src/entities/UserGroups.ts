@@ -11,7 +11,7 @@ export class UserGroups {
     title: string
 
     @Column()
-    scope: string
+    privileges: string
 
     @Column()
     created: string

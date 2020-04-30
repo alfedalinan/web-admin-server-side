@@ -38,7 +38,7 @@ class Routes {
         // #region User
 
         app.route('/user')
-            .get([CheckAccessToken], this.user.get)
+            .get([CheckAccessToken, CheckAuthorization], this.user.get)
             .post(this.user.create)
         
         app.route('/user/:id')
