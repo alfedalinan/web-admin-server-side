@@ -9,5 +9,6 @@ export const StatusMessage = {
      NO_CONTENT: "No Content/Result",
      UNAUTHORIZED: "Not Authorized",
      BAD_REQUEST: "Bad Request",
+     METHOD_NOT_ALLOWED: "Method Not Allowed"
 
 }

@@ -4,7 +4,7 @@ import {AuthController} from "../controller/AuthController";
 import { EventController } from "../controller/EventController";
 import { UserController } from "../controller/UserController";
 import { CheckAccessToken, CheckRefreshToken } from "../middlewares/CheckJwt";
-import { CheckAuthorization } from "../middlewares/CheckAuthorization";
+import { CheckUserPrivileges } from "../middlewares/CheckAuthorization";
 
 
 
@@ -38,13 +38,13 @@ class Routes {
         // #region User
 
         app.route('/user')
-            .get([CheckAccessToken, CheckAuthorization], this.user.get)
-            .post(this.user.create)
+            .get([CheckAccessToken, CheckUserPrivileges], this.user.get)
+            .post([CheckAccessToken, CheckUserPrivileges], this.user.create)
         
         app.route('/user/:id')
-            .get([CheckAccessToken], this.user.getById)
-            .put([CheckAccessToken], this.user.update)
-            .delete([CheckAccessToken], this.user.remove)
+            .get([CheckAccessToken, CheckUserPrivileges], this.user.getById)
+            .put([CheckAccessToken, CheckUserPrivileges], this.user.update)
+            .delete([CheckAccessToken, CheckUserPrivileges], this.user.remove)
 
         // #endregion
         

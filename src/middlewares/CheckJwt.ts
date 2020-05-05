@@ -1,5 +1,7 @@
 import  { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
+import { mysql } from '../connection/Connection';
+import { Users } from "../entities/Users";
 import { AppConfig } from '../config/AppConfig';
 import { StatusCode } from '../constants/StatusCode';
 import { StatusMessage } from '../constants/StatusMessage';
@@ -14,6 +16,24 @@ export const CheckAccessToken = (req: Request, res: Response, next: NextFunction
     try {
         payload = <any>jwt.verify(token, AppConfig.JwtSecret);
         res.locals.jwtPayload = payload;
+
+        mysql.then(async connection => {
+
+            let userRepository = connection.getRepository(Users);
+            let user: Users = await userRepository.findOne(payload.id, { select: ["token"] });
+
+            if (token != user.token) {
+                response = {
+                    status: StatusCode.UNAUTHORIZED,
+                    message: StatusMessage.UNAUTHORIZED,
+                    error: "Token is invalid for current user"
+                };
+        
+                res.status(StatusCode.OK).json(response);
+            }
+
+        });
+
     } catch (error) {
         //If token is not valid, respond with 401 (unauthorized)
         response = {

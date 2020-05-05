@@ -8,6 +8,7 @@ export const StatusCode = {
      NOT_FOUND: 404,
      NO_CONTENT: 204,
      UNAUTHORIZED: 401,
-     BAD_REQUEST: 400
+     BAD_REQUEST: 400,
+     METHOD_NOT_ALLOWED: 405
 
 }

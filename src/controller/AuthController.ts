@@ -79,8 +79,12 @@ export class AuthController {
                     // Successful login
 
                     //Create new JW Token here (with parameters of users.id and users.username)
-                    let accessToken: string = CreateAccessJwt({ id: user.id, username: user.username, domains: user.domain_group });
-                    let refreshToken: string = CreateRefreshJwt({ id: user.id, username: user.username, domains: user.domain_group });
+                    let accessToken: string = CreateAccessJwt({ id: user.id, username: user.username, user_group: user.user_group, domains: user.domain_group });
+                    let refreshToken: string = CreateRefreshJwt({ id: user.id, username: user.username, user_group: user.user_group, domains: user.domain_group });
+
+                    let userUpdate: Users = new Users();
+                    userUpdate.token = accessToken;
+                    await userRepository.update(user.id, userUpdate);
 
                     let users = await createQueryBuilder(Users, "users")
                                     .innerJoinAndSelect("users.user_groups", "user_groups")
@@ -101,6 +105,9 @@ export class AuthController {
                                                                         { ids: users['domain_groups'][i]['domain_privileges'].split(',') })
                                                                         .getMany();
                     }
+
+                    delete users['token'];
+                    delete users['password'];
 
                     users['access_token'] = accessToken;
                     users['refresh_token'] = refreshToken;

@@ -55,5 +55,15 @@ export const Helper = {
         let fullLog = new Date().toString() + `: ${entityName} = ${logText}`;
         console.log(fullLog);
 
+    },
+    inArrayOfObject: (key: string, value: any, arrayOfObjects: any) => {
+        for (let i = 0; i < arrayOfObjects.length; i++) {
+            if (arrayOfObjects[i][key] === value) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     }
 }
