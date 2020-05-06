@@ -58,12 +58,11 @@ export const Helper = {
     },
     inArrayOfObject: (key: string, value: any, arrayOfObjects: any) => {
         for (let i = 0; i < arrayOfObjects.length; i++) {
-            if (arrayOfObjects[i][key] === value) {
+            if (arrayOfObjects[i][key] == value) {
                 return true;
             }
-            else {
-                return false;
-            }
         }
+        
+        return false;
     }
 }

@@ -22,7 +22,7 @@ export class UserController {
             response.status = StatusCode.OK;
             response.message = StatusMessage.OK;
             response.data = user;
-            res.status(response.status).json(response);
+            res.status(StatusCode.OK).json(response);
         })
         .catch(error => {
             response.message = StatusMessage.INTERNAL_SERVER_ERROR;
@@ -155,5 +155,36 @@ export class UserController {
             res.status(response.status).json(response);
 
         })
+    }
+
+    public async resetPassword(req: Request, res: Response) {
+        let response: any = {};
+
+        mysql.then(async connection => {
+
+            let user: Users = new Users();
+            user.password = req.body.password;
+
+            const userRepository = connection.getRepository(Users);
+            await userRepository.update(req.params.id, user);
+
+            response = {
+                status: StatusCode.OK,
+                message: StatusMessage.OK,
+                data: "Password successfully updated."
+            };
+
+            res.status(StatusCode.OK).json(response);
+
+        })
+        .catch(error => {
+            response = {
+                status: StatusCode.INTERNAL_SERVER_ERROR,
+                message: StatusMessage.INTERNAL_SERVER_ERROR,
+                error: error
+            };
+
+            res.status(response.status).json(response);
+        });
     }
 }

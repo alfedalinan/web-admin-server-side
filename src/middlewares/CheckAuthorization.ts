@@ -23,33 +23,59 @@ export const CheckUserPrivileges = async (req: Request, res: Response, next: Nex
 
     let userPattern = /(user)/;
     let userGroupPattern = /(user_group)/;
+    let domainGroupPattern = /(domain_group)/;
     let resetPasswordPattern = /(reset)/;
 
-    if (userGroupPattern.test(requestOriginalUrl)) {
-
-    }
-    else if (userPattern.test(requestOriginalUrl)) {
-        (await mysql).query(`SELECT user_privileges.id, user_privileges.user_privilege 
+    (await mysql).query(`SELECT user_privileges.id, user_privileges.user_privilege 
                                 FROM user_groups
                                 JOIN user_privileges ON FIND_IN_SET(user_privileges.id, user_groups.privileges) > 0 
                                 WHERE user_groups.id=${payload.user_group}`)
                                 .then(result => {
-
-                                    switch (requestMethod) {
-                                        case "GET":
-                                            isValid = Helper.inArrayOfObject("id", 2, result);
-                                            break;
-                                        case "POST":
-                                            isValid = Helper.inArrayOfObject("id", 1, result);
-                                            break;
-                                        case "PUT":
-                                            isValid = Helper.inArrayOfObject("id", 3, result);
-                                        case "DELETE":
-                                            isValid = Helper.inArrayOfObject("id", 4, result);
-                                        default:
-                                            isValid = false;
-                                            break;
+                                    if (userGroupPattern.test(requestOriginalUrl)) {
+                                        switch (requestMethod) {
+                                            case "GET":
+                                                isValid = Helper.inArrayOfObject("id", 7, result);
+                                                break;
+                                            case "POST":
+                                                isValid = Helper.inArrayOfObject("id", 6, result);
+                                                break;
+                                            case "PUT":
+                                                isValid = Helper.inArrayOfObject("id", 8, result);
+                                                break;
+                                            case "DELETE":
+                                                isValid = Helper.inArrayOfObject("id", 9, result);
+                                                break;
+                                            default:
+                                                isValid = false;
+                                                break;
+                                        }
                                     }
+                                    else if (userPattern.test(requestOriginalUrl)) {
+                                        switch (requestMethod) {
+                                            case "GET":
+                                                isValid = Helper.inArrayOfObject("id", 2, result);
+                                                break;
+                                            case "POST":
+                                                isValid = Helper.inArrayOfObject("id", 1, result);
+                                                break;
+                                            case "PUT":
+                                                isValid = Helper.inArrayOfObject("id", 3, result);
+                                                break;
+                                            case "DELETE":
+                                                isValid = Helper.inArrayOfObject("id", 4, result);
+                                                break;
+                                            default:
+                                                isValid = false;
+                                                break;
+                                        }
+                                    }
+                                    else if (resetPasswordPattern.test(requestOriginalUrl)) {
+                                        isValid = Helper.inArrayOfObject("id", 5, result);
+                                    }
+                                    else if (payload.user_group == 1) {
+                                        isValid = true;
+                                    }
+
 
                                     if (isValid) {
                                         next();
@@ -60,8 +86,9 @@ export const CheckUserPrivileges = async (req: Request, res: Response, next: Nex
                                         response.error = "Resource access is not allowed for current user group";
                                         res.status(StatusCode.OK).json(response);
                                     }
-
                                 });
-        
-    }
+}
+
+export const CheckDomainPrivileges = async (req: Request, res: Response, next: NextFunction) => {
+    
 }
