@@ -8,6 +8,8 @@ import { Users } from '../entities/Users';
 import { DomainGroups } from '../entities/DomainGroups';
 import { UserPrivileges } from '../entities/UserPrivileges';
 import { DomainPrivileges } from '../entities/DomainPrivileges';
+import { AppConfig } from '../config/AppConfig';
+import * as jwt from 'jsonwebtoken';
 
 export class AuthController {
 
@@ -131,18 +133,28 @@ export class AuthController {
 
     public async refreshToken(req: Request, res: Response) {
         let response: any = {};
-        let body = req.body;
-        
+
         try {
-            let accessToken = CreateAccessJwt({ id: Date.now() });
 
-            let tokens = accessToken;
+            mysql.then(async connection => {
 
-            response.status = StatusCode.OK;
-            response.message = StatusMessage.OK;
-            response.access_token = tokens;
+                let payload = <any>jwt.verify(req.headers.authorization, AppConfig.JwtRefreshSecret);
+                res.locals.jwtPayload = payload;
 
-            res.status(StatusCode.OK).json(response)
+                let user: Users = new Users();
+                let accessToken = CreateAccessJwt({ id: payload.id, username: payload.username, user_group: payload.user_group, domains: payload.domain_group });
+
+                user.token = accessToken;
+
+                const userRepository = connection.getRepository(Users)
+                await userRepository.update(payload.id, user);
+
+                response.status = StatusCode.OK;
+                response.message = StatusMessage.OK;
+                response.access_token = accessToken;
+
+                res.status(StatusCode.OK).json(response);
+            });
         } catch (error) {
             response.status = StatusCode.INTERNAL_SERVER_ERROR;
             response.message = StatusMessage.INTERNAL_SERVER_ERROR;

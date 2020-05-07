@@ -72,7 +72,7 @@ export const CheckUserPrivileges = async (req: Request, res: Response, next: Nex
                                     else if (resetPasswordPattern.test(requestOriginalUrl)) {
                                         isValid = Helper.inArrayOfObject("id", 5, result);
                                     }
-                                    else if (payload.user_group == 1) {
+                                    else {
                                         isValid = true;
                                     }
 
