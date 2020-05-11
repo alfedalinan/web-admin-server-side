@@ -3,8 +3,6 @@ import * as jwt from 'jsonwebtoken';
 import { AppConfig } from '../config/AppConfig';
 import { mysql } from '../connection/Connection';
 import { Helper } from '../utils/Helper';
-import { Users } from '../entities/Users';
-import { getRepository } from "typeorm";
 import { StatusCode } from '../constants/StatusCode';
 import { StatusMessage } from '../constants/StatusMessage';
 
@@ -90,5 +88,13 @@ export const CheckUserPrivileges = async (req: Request, res: Response, next: Nex
 }
 
 export const CheckDomainPrivileges = async (req: Request, res: Response, next: NextFunction) => {
-    
+    let accessToken = req.headers.authorization;
+
+    let payload: any = jwt.verify(accessToken, AppConfig.JwtSecret);
+    let response: any = {};
+
+    let requestMethod = req.method;
+    let requestOriginalUrl = req.originalUrl;
+
+    let apolloIdPattern = /(apollo_id)/;
 }

@@ -80,7 +80,7 @@ export class AuthController {
                 else {
                     // Successful login
 
-                    //Create new JW Token here (with parameters of users.id and users.username)
+                    //Create new JW Token here
                     let accessToken: string = CreateAccessJwt({ id: user.id, username: user.username, user_group: user.user_group, domains: user.domain_group });
                     let refreshToken: string = CreateRefreshJwt({ id: user.id, username: user.username, user_group: user.user_group, domains: user.domain_group });
 
@@ -88,14 +88,24 @@ export class AuthController {
                     userUpdate.token = accessToken;
                     await userRepository.update(user.id, userUpdate);
 
-                    let users = await createQueryBuilder(Users, "users")
+                    let users: any;
+
+                    if (user.user_group > 0) {
+                        users = await createQueryBuilder(Users, "users")
                                     .innerJoinAndSelect("users.user_groups", "user_groups")
                                     .where("users.id = :id", { id: user.id })
                                     .getOne();
 
-                    users['user_groups']['user_privileges'] = await createQueryBuilder(UserPrivileges, "user_privileges")
+                        users['user_groups']['user_privileges'] = await createQueryBuilder(UserPrivileges, "user_privileges")
                                                                 .where("user_privileges.id IN (:ids)", { ids: users['user_groups']['privileges'].split(',') })
                                                                 .getMany();
+                   
+                    }
+                    else {
+                        users = await createQueryBuilder(Users, "users")
+                                    .where("users.id = :id", { id: user.id })
+                                    .getOne();
+                    }
                     
                     users['domain_groups'] = await createQueryBuilder(DomainGroups, "domain_groups")
                                             .where("domain_groups.id IN (:ids)", { ids: users['domain_group'].split(',') })
@@ -172,6 +182,10 @@ export class AuthController {
         response.message = "Successfully logged out!";
         
         res.status(response.status).json(response);
+
+    }
+
+    public async sign(req: Request, res: Response) {
 
     }
 }
