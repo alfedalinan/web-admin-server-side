@@ -1,4 +1,5 @@
 import Crypto = require('crypto');
+import { cql } from "../connection/Connection";
 
 export const Helper = {
 
@@ -10,11 +11,10 @@ export const Helper = {
         return days[index];
 
     },
-    arrayStringHelper: (data: any, value: any, add: boolean) => {
+    arrayStringFormatHelper: (data: any, value: any, add: boolean) => {
         // change curly brackets to square brackets
-        let temp1 = data.rows[0].identities.replace(/{/, "[");
+        let temp1 = data.replace(/{/, "[");
         let temp2 = temp1.replace(/}/, "]");
-
         // 1. Deserialize the string to convert it to a list/array
         let result = JSON.parse(temp2);
         
@@ -64,5 +64,21 @@ export const Helper = {
         }
         
         return false;
+    },
+    apolloIdExists: async (apolloId: string) => {
+        const query = `SELECT id FROM apollo_ids WHERE id='${apolloId}';`
+        let exists = false;
+
+        await cql.execute(query)
+           .then(result => {
+                if (result.rows.length > 0) {
+                    exists = true;
+                }
+           })
+           .catch(err => {
+                exists = false;
+           });
+        
+        return exists;
     }
 }

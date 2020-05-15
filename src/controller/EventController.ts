@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import {connection} from "../connection/Connection";
+import { cql } from "../connection/Connection";
 import { StatusCode } from '../constants/StatusCode';
 import { StatusMessage } from '../constants/StatusMessage';
 
@@ -12,7 +12,7 @@ export class EventController {
 
         const query = 'SELECT * FROM apollo_events2';
 
-        connection.execute(query, function(err, result) {
+        cql.execute(query, function(err, result) {
 
             if (err != null) {
                 response.status = StatusCode.INTERNAL_SERVER_ERROR;
@@ -37,7 +37,7 @@ export class EventController {
 
         const query = `SELECT * FROM apollo_events2 WHERE Apollo_Id='${apolloId}'`;
 
-        connection.execute(query, function(err, result) {
+        cql.execute(query, function(err, result) {
 
             if (err != null) {
                 response.status = StatusCode.INTERNAL_SERVER_ERROR;

@@ -16,7 +16,7 @@ export const AppConfig = {
     InitializationVector: "4ad4b56b0ebfaaba",
 
     // Cassandra Database Configuration
-    CqlContactPoints: ['192.168.50.7'],
+    CqlContactPoints: ['127.0.0.1'],
     CqlDataCenters: ['datacenter1'],
     CqlKeySpace: 'global_apollo',
     

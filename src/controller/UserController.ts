@@ -40,7 +40,7 @@ export class UserController {
 
             const userRepository = connection.getRepository(Users);
             const user: Users = await userRepository.findOne(parseInt(userId), {
-               select: ["id", "first_name", "last_name", "username", "user_group", "domain_group", "created"] 
+               select: ["id", "first_name", "last_name", "email", "username", "user_group", "domain_group", "created"] 
             });
 
             if (user) {

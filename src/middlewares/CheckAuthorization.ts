@@ -5,9 +5,9 @@ import { mysql } from '../connection/Connection';
 import { Helper } from '../utils/Helper';
 import { StatusCode } from '../constants/StatusCode';
 import { StatusMessage } from '../constants/StatusMessage';
+import store = require('data-store');
 
 /* Always check for the JSON Web Token for identification */
-
 export const CheckUserPrivileges = async (req: Request, res: Response, next: NextFunction) => {
     let accessToken = req.headers.authorization;
 
@@ -97,4 +97,43 @@ export const CheckDomainPrivileges = async (req: Request, res: Response, next: N
     let requestOriginalUrl = req.originalUrl;
 
     let apolloIdPattern = /(apollo_id)/;
+    let subscriptionPattern = /(subscriptions)/;
+    let identityPattern =  /(identities)/;
+    let eventPattern =  /(event)/;
+
+    /**
+     * Apollo ID 
+     * 1 - Reserve
+     * 2 - Update State
+     * 6 - View/Read
+     * 
+     * Identities
+     * 3 - Create
+     * 5 - Update
+     * 7 - View/Read
+     * 
+     * Subscription
+     * 4 - Create
+     * 5 - Update
+     * 8 - View/Read
+     * 
+     * Event
+     * 9 - View/Read
+    */
+    (await mysql).query(`SELECT domain_groups.domain_group, domain_privileges.id, domain_privileges.domain_privilege
+                        FROM domain_groups 
+                        JOIN domain_privileges ON FIND_IN_SET(domain_privileges.id, domain_groups.domain_privileges) 
+                        WHERE domain_groups.id IN (${payload.domains}) GROUP BY domain_group, domain_privileges.id;`)
+                        .then(result => {
+
+                            let nce: any = [];
+                            let uce: any = [];
+
+                            for (let index = 0; index < result.length; index++) {
+                                
+                                
+                            }
+                            next();
+
+                        })
 }
