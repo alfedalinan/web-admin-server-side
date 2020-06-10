@@ -1,4 +1,4 @@
-import {Request, Response} from "express";
+
 // Everytime you create controllers, you add them here
 import {AuthController} from "../controller/AuthController";
 import { EventController } from "../controller/EventController";
@@ -102,11 +102,11 @@ class Routes {
         
         //#region Apollo ID 
         app.route('/apollo_id')
-            .post([CheckDomainPrivileges], this.apolloId.reserve)
+            .post([CheckAccessToken, CheckDomainPrivileges], this.apolloId.reserve)
         
         app.route('/apollo_id/:apolloId')
-            .get([CheckDomainPrivileges], this.apolloId.inquire)
-            .put([CheckDomainPrivileges], this.apolloId.modify)
+            .get([CheckAccessToken, CheckDomainPrivileges], this.apolloId.inquire)
+            .put([CheckAccessToken, CheckDomainPrivileges], this.apolloId.modify)
 
         //#endregion
 
@@ -128,6 +128,7 @@ class Routes {
         app.route('/identities/:id')
             .get(this.identity.getById)
 
+        //#endregion
         
     }
 }
