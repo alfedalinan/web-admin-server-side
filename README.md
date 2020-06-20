@@ -12,4 +12,5 @@ Steps to run this project:
 
 ## API Documentation
 
-* After running this application via `npm run start` or `npm run dev`, open your browser and go to `/api-docs` endpoint (e.g. `http://localhost:3000/api-docs` - powered by Swagger UI).
+* After running this application via `npm run start` or `npm run dev`, open your browser and go to `/api-docs` endpoint
+ (e.g. `http://localhost:3000/api-docs` - powered by Swagger UI).

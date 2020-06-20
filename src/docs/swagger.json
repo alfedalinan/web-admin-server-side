@@ -988,13 +988,13 @@
           }
         },
         "delete": {
-          "x-swagger-router-controller": "User Group Controller",
-          "tags": ["User Group"],
-          "description": "Removes the record of a specific user group",
+          "x-swagger-router-controller": "Domain Group Controller",
+          "tags": ["Domain Group"],
+          "description": "Removes the record of a specific domain group",
           "parameters": [{
             "in": "path",
             "name": "id",
-            "description": "ID of a specific user group"
+            "description": "ID of a specific domain group"
           },
           {
             "in": "header",
@@ -1008,7 +1008,7 @@
                 "application/json": {
                   "status": 200,
                   "message": "OK",
-                  "data": "User group has been removed successfully"
+                  "data": "Domain group has been removed successfully"
                 }
               }
             },
