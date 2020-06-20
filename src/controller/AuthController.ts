@@ -17,7 +17,6 @@ export class AuthController {
 
     public async login(req: Request, res: Response) {
         let response: any = {}; // contains { status, data, message } dynamically
-
         // Decipher of hashed timestamp
         // let hashText = req.body.hash;
         // let hashTextParts = hashText.split(':');

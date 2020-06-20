@@ -22,8 +22,8 @@ class App {
 
     // for routing the http request to controller
         this.routePrv = new Routes();
+
         this.routePrv.routes(this.app);
-        
     }
 }
 export default new App().app;

@@ -1,5 +1,7 @@
 
 // Everytime you create controllers, you add them here
+import { Response } from "express";
+import {MainController} from "../controller/MainController";
 import {AuthController} from "../controller/AuthController";
 import { EventController } from "../controller/EventController";
 import { UserController } from "../controller/UserController";
@@ -13,10 +15,12 @@ import { IdentityController } from "../controller/IdentityController";
 import { CheckAccessToken, CheckRefreshToken } from "../middlewares/CheckJwt";
 import { CheckUserPrivileges, CheckDomainPrivileges } from "../middlewares/CheckAuthorization";
 
-
+import { serve, setup } from "swagger-ui-express";
+let swaggerDocs = require('../docs/swagger.json');
 
 class Routes {
     // Every controllers to be registered in routes must be declared here:
+    private main: MainController;
     private auth: AuthController;
     private event: EventController;
     private user: UserController;
@@ -28,6 +32,7 @@ class Routes {
 
     constructor() {
         // Every controllers to be registered in routes must have an instance here:
+        this.main = new MainController();
         this.auth = new AuthController();
         this.event = new EventController();
         this.user = new UserController();
@@ -39,7 +44,12 @@ class Routes {
     }
 
     public routes(app): void {
-        
+
+        app.use('/api-docs', serve, setup(swaggerDocs));
+
+        app.route('/')
+            .get(this.main.healthCheck)
+
         // #region Auth section
         app.route('/auth/login')
             .post(this.auth.login)
@@ -129,7 +139,6 @@ class Routes {
             .get(this.identity.getById)
 
         //#endregion
-        
     }
 }
 export {Routes};

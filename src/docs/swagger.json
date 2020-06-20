@@ -1,0 +1,1032 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Apollo ID System - Web Admin API",
+      "description": "List of usable API endpoints",
+      "version": "1.0"
+    },
+    "produces": ["application/json"],
+    "paths": {
+      "/": {
+        "get": {
+          "x-swagger-router-controller": "Main Controller",
+          "tags": ["API Status Check"],
+          "description": "Web Admin API Status Check",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "API here! I'm up!"
+                }
+              }
+            }
+          }
+        }
+      },
+      "/auth/login": {
+        "post": {
+          "x-swagger-router-controller": "Auth Controller",
+          "tags": ["Auth"],
+          "description": "Authorize an access through login",
+          "parameters": [{
+            "in": "body",
+            "name": "Request Body",
+            "description": "Credentials for login",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK - Successful login",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": "<All of login data including tokens>"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If the password is invalid",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Password is incorrect",
+                  "data": []
+                }
+              }
+            },
+            "404": {
+              "description": "Not Found - If username is not existing in the system",
+              "examples": {
+                "application/json": {
+                  "status": 404,
+                  "message": "Content not found",
+                  "data": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "/auth/logout": {
+        "get": {
+          "x-swagger-router-controller": "Auth Controller",
+          "tags": ["Auth"],
+          "description": "Logout from web admin",
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "Successfully logged out!"
+                }
+              }
+            }
+          }
+        }
+      },
+      "/auth/refresh_token": {
+        "post": {
+          "x-swagger-router-controller": "Auth Controller",
+          "tags": ["Auth"],
+          "description": "Re-issue of token in case of expiry",
+          "parameters": [{
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your refresh token from login data"
+          }
+          ],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": "<Tokens>"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "/user": {
+        "get": {
+          "x-swagger-router-controller": "User Controller",
+          "tags": ["User"],
+          "description": "Get list of users",
+          "parameters": [{
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": [{
+                    "first_name": "string",
+                    "last_name": "string",
+                    "username": "string",
+                    "email": "string",
+                    "user_group": 0,
+                    "domain_group": "string"
+                  },
+                  {
+                    "first_name": "string",
+                    "last_name": "string",
+                    "username": "string",
+                    "email": "string",
+                    "user_group": 0,
+                    "domain_group": "string"
+                  }]
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "x-swagger-router-controller": "User Controller",
+          "tags": ["User"],
+          "description": "Create a user",
+          "parameters": [{
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          },
+          {
+            "in": "body",
+            "name": "Request Body",
+            "type": "object",
+            "description": "User details",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "user_group": {
+                  "type": "integer"
+                },
+                "domain_group": {
+                  "type": "string"
+                }
+              }
+            }  
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "first_name": "string",
+                    "last_name": "string",
+                    "username": "string",
+                    "email": "string",
+                    "user_group": 0,
+                    "domain_group": "string"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/user/{id}": {
+        "get": {
+          "x-swagger-router-controller": "User Controller",
+          "tags": ["User"],
+          "description": "Get data of specific user",
+          "parameters": [{
+            "in": "path",
+            "name": "id",
+            "description": "ID of a specific user"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "first_name": "string",
+                    "last_name": "string",
+                    "username": "string",
+                    "email": "string",
+                    "user_group": 0,
+                    "domain_group": "string"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "x-swagger-router-controller": "User Controller",
+          "tags": ["User"],
+          "description": "Updates data of specific user",
+          "parameters": [{
+            "in": "path",
+            "name": "id",
+            "description": "ID of a specific user"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          },
+          {
+            "in": "body",
+            "name": "Request Body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "user_group": {
+                  "type": "integer"
+                },
+                "domain_group": {
+                  "type": "string"
+                }
+              }
+            }
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "first_name": "string",
+                    "last_name": "string",
+                    "username": "string",
+                    "email": "string",
+                    "user_group": 0,
+                    "domain_group": "string"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "x-swagger-router-controller": "User Controller",
+          "tags": ["User"],
+          "description": "Removes the record of a specific user",
+          "parameters": [{
+            "in": "path",
+            "name": "id",
+            "description": "ID of a specific user"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": "User has been removed successfully"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/reset_password/{id}": {
+        "put": {
+          "x-swagger-router-controller": "User Controller",
+          "tags": ["User"],
+          "description": "Updates data of specific user",
+          "parameters": [{
+            "in": "path",
+            "name": "id",
+            "description": "ID of a specific user"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          },
+          {
+            "in": "body",
+            "name": "Request Body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": "Password successfully updated."
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "/user_group": {
+        "get": {
+          "x-swagger-router-controller": "User Group Controller",
+          "tags": ["User Group"],
+          "description": "Get list of user groups",
+          "parameters": [{
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": [{
+                    "id": 1,
+                    "title": "Admin"
+                  },
+                  {
+                      "id": 2,
+                      "title": "Support"
+                  }]
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "x-swagger-router-controller": "User Group Controller",
+          "tags": ["User Group"],
+          "description": "Create a user group",
+          "parameters": [{
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          },
+          {
+            "in": "body",
+            "name": "Request Body",
+            "type": "object",
+            "description": "User group details",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "privileges": {
+                  "type": "array",
+                  "example": [2,5,7]
+                }
+              }
+            }  
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "title": "string",
+                    "privileges": [2,5,7]
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/user_group/{id}": {
+        "get": {
+          "x-swagger-router-controller": "User Group Controller",
+          "tags": ["User Group"],
+          "description": "Get data of specific user group",
+          "parameters": [{
+            "in": "path",
+            "name": "id",
+            "description": "ID of a specific user group"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "first_name": "string",
+                    "last_name": "string",
+                    "username": "string",
+                    "email": "string",
+                    "user_group": 0,
+                    "domain_group": "string"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "x-swagger-router-controller": "User Group Controller",
+          "tags": ["User Group"],
+          "description": "Updates data of specific user group",
+          "parameters": [{
+            "in": "path",
+            "name": "id",
+            "description": "ID of a specific user"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          },
+          {
+            "in": "body",
+            "name": "Request Body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "privileges": {
+                    "type": "array",
+                    "example": [2,5,7]
+                  }
+                }
+              }
+            }
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "first_name": "string",
+                    "last_name": "string",
+                    "username": "string",
+                    "email": "string",
+                    "user_group": 0,
+                    "domain_group": "string"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "x-swagger-router-controller": "User Group Controller",
+          "tags": ["User Group"],
+          "description": "Removes the record of a specific user group",
+          "parameters": [{
+            "in": "path",
+            "name": "id",
+            "description": "ID of a specific user group"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": "User group has been removed successfully"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "/domain_group": {
+        "get": {
+          "x-swagger-router-controller": "Domain Group Controller",
+          "tags": ["Domain Group"],
+          "description": "Get list of domain groups",
+          "parameters": [{
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": [
+                      {
+                          "id": 1,
+                          "domain_group": "NCE WEB"
+                      },
+                      {
+                          "id": 2,
+                          "domain_group": "NCE API"
+                      },
+                      {
+                          "id": 3,
+                          "domain_group": "NCE API Read Only"
+                      },
+                      {
+                          "id": 4,
+                          "domain_group": "UCE WEB"
+                      },
+                      {
+                          "id": 5,
+                          "domain_group": "UCE API"
+                      },
+                      {
+                          "id": 6,
+                          "domain_group": "UCE API Read Only"
+                      }
+                  ]
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "x-swagger-router-controller": "Domain Group Controller",
+          "tags": ["Domain Group"],
+          "description": "Create a domain group",
+          "parameters": [{
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          },
+          {
+            "in": "body",
+            "name": "Request Body",
+            "type": "object",
+            "description": "Domain group details",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "domain_group": {
+                  "type": "string"
+                },
+                "domain_privileges": {
+                  "type": "array",
+                  "example": [6,7,8,9]
+                }
+              }
+            }  
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "domain_group": "string",
+                    "domain_privileges": [6,7,8,9]
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/domain_group/{id}": {
+        "get": {
+          "x-swagger-router-controller": "Domain Group Controller",
+          "tags": ["Domain Group"],
+          "description": "Get data of specific domain group",
+          "parameters": [{
+            "in": "path",
+            "name": "id",
+            "description": "ID of a specific user group"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                      "id": 1,
+                      "domain_group": "NCE WEB",
+                      "domain_privileges": "6,7,8,9",
+                      "created": "2020-04-29T06:58:22.000Z",
+                      "updated": "2020-04-30T07:22:02.000Z",
+                      "domain": null,
+                      "privileges_data": [
+                          {
+                              "id": 6,
+                              "domain_privilege": "Read Apollo ID"
+                          },
+                          {
+                              "id": 7,
+                              "domain_privilege": "Read Apollo ID Identities"
+                          },
+                          {
+                              "id": 8,
+                              "domain_privilege": "Read Apollo ID Subscriptions"
+                          },
+                          {
+                              "id": 9,
+                              "domain_privilege": "Read Apollo ID History"
+                          }
+                      ]
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "x-swagger-router-controller": "Domain Group Controller",
+          "tags": ["Domain Group"],
+          "description": "Updates data of specific domain group",
+          "parameters": [{
+            "in": "path",
+            "name": "id",
+            "description": "ID of a specific domain"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          },
+          {
+            "in": "body",
+            "name": "Request Body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "privileges": {
+                    "type": "string",
+                    "example": "2,5,7"
+                  }
+                }
+              }
+            }
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": {
+                    "domain_group": "string",
+                    "domain_privileges": "6,7,8"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "x-swagger-router-controller": "User Group Controller",
+          "tags": ["User Group"],
+          "description": "Removes the record of a specific user group",
+          "parameters": [{
+            "in": "path",
+            "name": "id",
+            "description": "ID of a specific user group"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Your access token from login data"
+          }],
+          "responses": {
+            "200": {
+              "description": "OK",
+              "examples": {
+                "application/json": {
+                  "status": 200,
+                  "message": "OK",
+                  "data": "User group has been removed successfully"
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized - If token is blank or malformed",
+              "examples": {
+                "application/json": {
+                  "status": 401,
+                  "message": "Not Authorized",
+                  "data": {
+                    "name": "JsonWebTokenError",
+                    "message": "jwt must be provided"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
